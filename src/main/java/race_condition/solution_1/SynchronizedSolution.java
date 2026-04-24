@@ -1,6 +1,6 @@
 package race_condition.solution_1;
 
-public class SynchronizedMethodSolution {
+public class SynchronizedSolution {
     static int counter = 0;
 
     public static void main(String[] args) throws InterruptedException {
