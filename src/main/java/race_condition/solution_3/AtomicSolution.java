@@ -1,4 +1,4 @@
-package race_condition.solution_2;
+package race_condition.solution_3;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

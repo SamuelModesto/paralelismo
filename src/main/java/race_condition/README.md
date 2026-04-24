@@ -54,9 +54,13 @@ Thread 2: escreve 6
 
 💣 você perdeu uma atualização pois elas nao sincronizaram o acesso ao contador.
 
-## 🛠️ Soluções
+---
 
-### 1. synchronized
+## 🛠️Soluções
+
+### 1. synchronized method
+Método inteiro sincronizado
+
 o synchronized garante:
 - exclusão mútua.
 - só uma thread entra no método por vez.
@@ -77,8 +81,20 @@ Thread 2 só entra depois
 
 - o counter++ continua não sendo atômico.
 - mas agora ele está protegido.
+---
+### 2. synchronized block
+Bloco sincronizado dentro do loop
 
-### 2. AtomicInteger
+```
+Thread 1 pega lock → incrementa → solta
+Thread 2 pega lock → incrementa → solta
+Thread 1 pega lock → incrementa → solta
+...
+```
+threads se alternam o tempo todo.
+
+---
+### 3. AtomicInteger
 
 Utiliza operações atômicas sem necessidade de lock explícito
 
@@ -118,16 +134,33 @@ AtomicInteger é ótimo para:
 Mas NÃO resolve bem:
 - múltiplas variáveis dependentes
 - operações complexas (ex: transferir dinheiro entre contas)
+---
+### 4. Lock
+Aqui entra um conceito novo o **ReentrantLock**.
 
+ReentrantLock é uma classe da biblioteca de concorrência do Java (java.util.concurrent.locks) 
+que fornece um mecanismo de bloqueio explícito e reentrante.
+Ela permite que uma mesma thread adquira o bloqueio múltiplas vezes sem causar deadlock, 
+oferecendo controle mais detalhado que a palavra-chave synchronized.
 
-## 📊 Resultado
+O que ele te dá:
+- mais controle que synchronized
+- pode tentar lock (tryLock)
+- pode ter timeout
+- mais usado em sistemas reais
 
-| Versão | Resultado       |
-| ----- | --------------- |
-| Sem controle | Inconsistente ❌ |
-| synchronized | Correto ✅       |
-| Atomic| Correto ✅       |
+---
 
+## 📊 Resumo das abordagens
+
+| Abordagem                | Facilidade | Controle | Performance | Bloqueio          | Uso ideal               |
+| ------------------------ | ---------- | -------- | ----------- | ----------------- | ----------------------- |
+| `synchronized` (método)  | ⭐⭐⭐⭐       | ⭐        | 😐 Média    | Sim (lock)        | Casos simples           |
+| `synchronized` (bloco)   | ⭐⭐⭐        | ⭐⭐       | 😐 Média    | Sim (lock)        | Escopo mais controlado  |
+| `Lock` (`ReentrantLock`) | ⭐⭐         | ⭐⭐⭐⭐     | 🙂 Boa      | Sim (lock)        | Cenários mais complexos |
+| `AtomicInteger`          | ⭐⭐⭐⭐       | ⭐        | 🚀 Alta     | ❌ Não (lock-free) | Operações simples       |
+
+---
 ## ▶️ Como rodar
 
 ```bash
